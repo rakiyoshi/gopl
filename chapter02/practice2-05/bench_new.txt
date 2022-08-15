@@ -1,0 +1,7 @@
+goos: linux
+goarch: amd64
+pkg: gopl/chapter02/practice2-05
+cpu: Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz
+BenchmarkPopCount-8   	129719310	         9.370 ns/op
+PASS
+ok  	gopl/chapter02/practice2-05	2.152s
