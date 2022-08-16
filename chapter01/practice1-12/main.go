@@ -18,7 +18,6 @@ import (
 var palette = []color.Color{color.White, color.Black}
 
 const (
-	whiteIndex = 0 // first color of palette
 	blackIndex = 1 // next color
 )
 
@@ -65,5 +64,8 @@ func lissajous(out io.Writer, cycles int) {
 		anim.Delay = append(anim.Delay, delay)
 		anim.Image = append(anim.Image, img)
 	}
-	gif.EncodeAll(out, &anim)
+	err := gif.EncodeAll(out, &anim)
+	if err != nil {
+		fmt.Printf("error: %v", err)
+	}
 }

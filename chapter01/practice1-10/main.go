@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"time"
@@ -29,7 +29,7 @@ func fetch(url string, ch chan<- string) {
 		return
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		ch <- fmt.Sprintf("while reading data: %v", err)
 		return
@@ -46,7 +46,7 @@ func fetch(url string, ch chan<- string) {
 		ch <- fmt.Sprintf("failed to get current directory: %v", err)
 	}
 	filename := curDir + "/practice1-10" + resp.Request.URL.Path
-	err = ioutil.WriteFile(filename, data, 0644)
+	err = os.WriteFile(filename, data, 0644)
 	if err != nil {
 		ch <- fmt.Sprintf("while writing %s: %v", filename, err)
 	}
