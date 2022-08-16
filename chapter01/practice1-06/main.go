@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/gif"
@@ -21,11 +22,6 @@ var palette = []color.Color{
 	color.RGBA{0x00, 0x00, 0xff, 0xff},
 	color.RGBA{0xff, 0x00, 0xff, 0xff},
 }
-
-const (
-	whiteIndex = 0 // first color of palette
-	blackIndex = 1 // next color
-)
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -57,5 +53,8 @@ func lissajous(out io.Writer) {
 		anim.Delay = append(anim.Delay, delay)
 		anim.Image = append(anim.Image, img)
 	}
-	gif.EncodeAll(out, &anim)
+	err := gif.EncodeAll(out, &anim)
+	if err != nil {
+		fmt.Printf("error: %v", err)
+	}
 }
