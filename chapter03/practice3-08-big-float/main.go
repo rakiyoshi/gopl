@@ -13,6 +13,8 @@ type Complex struct {
 	im *big.Float
 }
 
+// TODO: fixme
+// these methods don't work well
 func main() {
 	const (
 		xmin, ymin, xmax, ymax = -2, -2, +2, +2
