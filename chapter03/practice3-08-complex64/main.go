@@ -10,9 +10,14 @@ import (
 
 func main() {
 	const (
-		xmin, ymin, xmax, ymax = -2, -2, +2, +2
-		width, height          = 1024 * 4, 1024 * 4
+		xmin_, ymin_, xmax_, ymax_ = -2, -2, +2, +2
+		width, height              = 1024, 1024
+		scale                      = 0xff
 	)
+	xmin := float64(xmin_) / scale
+	xmax := float64(xmax_) / scale
+	ymin := float64(ymin_) / scale
+	ymax := float64(ymax_) / scale
 
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for py := 0; py < height; py++ {
