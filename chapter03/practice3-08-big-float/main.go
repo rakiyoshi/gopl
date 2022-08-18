@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -10,14 +9,14 @@ import (
 )
 
 type Complex struct {
-	x *big.Float
-	y *big.Float
+	re *big.Float
+	im *big.Float
 }
 
 func main() {
 	const (
 		xmin, ymin, xmax, ymax = -2, -2, +2, +2
-		width, height          = 1024 * 4, 1024 * 4
+		width, height          = 1024, 1024
 	)
 
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
@@ -26,8 +25,8 @@ func main() {
 		for px := 0; px < width; px++ {
 			x := new(big.Float).SetFloat64(float64(px)/width*(xmax-xmin) + xmin)
 			z := Complex{
-				x: x,
-				y: y,
+				re: x,
+				im: y,
 			}
 			c := simpleFractal(z)
 			img.Set(px, py, c)
@@ -37,17 +36,19 @@ func main() {
 	png.Encode(os.Stdout, img)
 }
 
-func simpleFractal(x Complex) color.RGBA {
-	const iterations = 200
+func simpleFractal(z Complex) color.RGBA {
+	const iterations = 100
 	const contrast = 15
 
 	v := Complex{
-		x: new(big.Float).SetFloat64(0.0),
-		y: new(big.Float).SetFloat64(0.0),
+		re: new(big.Float).SetFloat64(0.0),
+		im: new(big.Float).SetFloat64(0.0),
 	}
 	for n := uint8(0); n < iterations; n++ {
-		fx := f(x)
-		if fx.x.IsInf() || fx.y.IsInf() {
+		if z.re.Cmp(new(big.Float).SetFloat64(-2)) == -1 ||
+			z.re.Cmp(new(big.Float).SetFloat64(2)) == 1 ||
+			z.im.Cmp(new(big.Float).SetFloat64(-2)) == -1 ||
+			z.im.Cmp(new(big.Float).SetFloat64(2)) == 1 {
 			return color.RGBA{
 				R: 0x00,
 				G: 0x00,
@@ -55,8 +56,8 @@ func simpleFractal(x Complex) color.RGBA {
 				A: 0xff,
 			}
 		}
-		v = plus(multiply(v, v), x)
-		if abs(f(x)).Cmp(new(big.Float).SetFloat64(1)) == -1 {
+		v = plus(multiply(v, v), z)
+		if abs(f(z)).Cmp(new(big.Float).SetFloat64(1)) == -1 {
 			r, g, b := color.YCbCrToRGB(
 				0x00,
 				uint8(0xff)-contrast*n,
@@ -69,7 +70,7 @@ func simpleFractal(x Complex) color.RGBA {
 				A: 0xff,
 			}
 		}
-		x = minus(x, divide(f(x), fDiff(x)))
+		z = minus(z, divide(f(z), fDiff(z)))
 	}
 	r, g, b, a := color.Black.RGBA()
 	return color.RGBA{
@@ -85,8 +86,8 @@ func f(z Complex) Complex {
 	return minus(
 		multiply(multiply(multiply(multiply(z, z), z), z), z),
 		Complex{
-			x: new(big.Float).SetFloat64(1),
-			y: new(big.Float).SetFloat64(0),
+			re: new(big.Float).SetFloat64(1),
+			im: new(big.Float).SetFloat64(0),
 		},
 	)
 }
@@ -95,8 +96,8 @@ func fDiff(z Complex) Complex {
 	// 4 * x**3
 	result := multiply(
 		Complex{
-			x: new(big.Float).SetFloat64(4.0),
-			y: new(big.Float).SetFloat64(0),
+			re: new(big.Float).SetFloat64(4.0),
+			im: new(big.Float).SetFloat64(0),
 		},
 		multiply(multiply(multiply(z, z), z), z),
 	)
@@ -105,54 +106,51 @@ func fDiff(z Complex) Complex {
 
 func plus(a, b Complex) Complex {
 	return Complex{
-		x: new(big.Float).Add(a.x, b.x),
-		y: new(big.Float).Add(a.y, b.y),
+		re: new(big.Float).Add(a.re, b.re),
+		im: new(big.Float).Add(a.im, b.im),
 	}
 }
 
 func minus(a, b Complex) Complex {
 	return Complex{
-		x: new(big.Float).Sub(a.x, b.x),
-		y: new(big.Float).Sub(a.y, b.y),
+		re: new(big.Float).Sub(a.re, b.re),
+		im: new(big.Float).Sub(a.im, b.im),
 	}
 }
 
 func multiply(a, b Complex) Complex {
 	return Complex{
-		x: new(big.Float).Sub(
-			new(big.Float).Mul(a.x, a.x),
-			new(big.Float).Mul(b.y, b.y),
+		re: new(big.Float).Sub(
+			new(big.Float).Mul(a.re, a.re),
+			new(big.Float).Mul(b.im, b.im),
 		),
-		y: new(big.Float).Add(
-			new(big.Float).Mul(a.x, b.y),
-			new(big.Float).Mul(a.y, b.x),
+		im: new(big.Float).Add(
+			new(big.Float).Mul(a.re, b.im),
+			new(big.Float).Mul(a.im, b.re),
 		),
 	}
 }
 
 func divide(a, b Complex) Complex {
-	x, _ := b.x.Float64()
-	y, _ := b.y.Float64()
-	fmt.Fprintf(os.Stderr, "%X, %X\n", x, y)
 	return Complex{
-		x: new(big.Float).Quo(
+		re: new(big.Float).Quo(
 			new(big.Float).Add(
-				new(big.Float).Mul(a.x, b.x),
-				new(big.Float).Mul(a.y, b.y),
+				new(big.Float).Mul(a.re, b.re),
+				new(big.Float).Mul(a.im, b.im),
 			),
 			new(big.Float).Add(
-				new(big.Float).Mul(b.x, b.x),
-				new(big.Float).Mul(b.y, b.y),
+				new(big.Float).Mul(b.re, b.re),
+				new(big.Float).Mul(b.im, b.im),
 			),
 		),
-		y: new(big.Float).Quo(
+		im: new(big.Float).Quo(
 			new(big.Float).Sub(
-				new(big.Float).Mul(b.x, a.y),
-				new(big.Float).Mul(a.x, b.y),
+				new(big.Float).Mul(b.re, a.im),
+				new(big.Float).Mul(a.re, b.im),
 			),
 			new(big.Float).Add(
-				new(big.Float).Mul(b.x, b.x),
-				new(big.Float).Mul(b.y, b.y),
+				new(big.Float).Mul(b.re, b.re),
+				new(big.Float).Mul(b.im, b.im),
 			),
 		),
 	}
@@ -161,8 +159,8 @@ func divide(a, b Complex) Complex {
 func abs(z Complex) *big.Float {
 	return new(big.Float).Sqrt(
 		new(big.Float).Add(
-			new(big.Float).Mul(z.x, z.x),
-			new(big.Float).Mul(z.y, z.y),
+			new(big.Float).Mul(z.re, z.re),
+			new(big.Float).Mul(z.im, z.im),
 		),
 	)
 }
