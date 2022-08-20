@@ -39,26 +39,8 @@ func TestCharcountTestCharcount(t *testing.T) {
 
 	for _, tt := range tests {
 		got := charcount(tt.input)
-		if got.control != tt.want.control {
-			t.Errorf("got.control = %d, want = %d", got.control, tt.want.control)
-		}
-		if got.letter != tt.want.letter {
-			t.Errorf("got.letter = %d, want = %d", got.letter, tt.want.letter)
-		}
-		if got.mark != tt.want.mark {
-			t.Errorf("got.mark = %d, want = %d", got.mark, tt.want.mark)
-		}
-		if got.number != tt.want.number {
-			t.Errorf("got.number = %d, want = %d", got.number, tt.want.number)
-		}
-		if got.punctuation != tt.want.punctuation {
-			t.Errorf("got.punctuation = %d, want = %d", got.punctuation, tt.want.punctuation)
-		}
-		if got.space != tt.want.space {
-			t.Errorf("got.space = %d, want = %d", got.space, tt.want.space)
-		}
-		if got.symbol != tt.want.symbol {
-			t.Errorf("got.symbol = %d, want = %d", got.symbol, tt.want.symbol)
+		if got != tt.want {
+			t.Errorf("got = %q, want = %q", got, tt.want)
 		}
 	}
 }
