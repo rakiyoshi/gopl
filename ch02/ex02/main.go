@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"gopl/chapter02/tempconv"
+	"gopl/ch02/tempconv"
 )
 
 func main() {

@@ -45,7 +45,7 @@ func fetch(url string, ch chan<- string) {
 	if err != nil {
 		ch <- fmt.Sprintf("failed to get current directory: %v", err)
 	}
-	filename := curDir + "/practice1-10" + resp.Request.URL.Path
+	filename := curDir + "/ex10" + resp.Request.URL.Path
 	err = os.WriteFile(filename, data, 0644)
 	if err != nil {
 		ch <- fmt.Sprintf("while writing %s: %v", filename, err)
