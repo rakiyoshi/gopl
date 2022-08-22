@@ -1,4 +1,4 @@
-// Practice1-4 prints duplicated line with counts
+// ex04 prints duplicated line with counts
 // It reads from stdio or specified files
 package main
 
@@ -20,7 +20,7 @@ func main() {
 			counts := make(map[string]int)
 			f, err := os.Open(arg)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "practice1-4: %v\n", err)
+				fmt.Fprintf(os.Stderr, "ex04: %v\n", err)
 				continue
 			}
 			countLines(f, counts)

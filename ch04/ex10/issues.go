@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"gopl/chapter04/github"
+	"gopl/ch04/github"
 )
 
 func main() {

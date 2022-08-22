@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gopl/chapter04/github"
+	"gopl/ch04/github"
 	"html/template"
 	"log"
 	"os"

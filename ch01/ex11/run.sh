@@ -183,4 +183,4 @@ readonly URLS=(
 "http://jpcodeqa.com/"
 )
 
-go run $(pwd)/practice1-11/main.go ${URLS[@]}
+go run $(pwd)/ex11/main.go ${URLS[@]}
