@@ -24,11 +24,9 @@ func visit(texts []string, n *html.Node) []string {
 		return texts
 	}
 	if n.Type == html.TextNode {
-		replaced := strings.ReplaceAll(n.Data, " ", "")
-		replaced = strings.ReplaceAll(replaced, "\t", "")
-		replaced = strings.ReplaceAll(replaced, "\n", "")
+		replaced := trimPrefixSuffixAll(n.Data)
 		if len(replaced) > 0 {
-			texts = append(texts, trimPrefixSuffixAll(n.Data))
+			texts = append(texts, replaced)
 		}
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -41,6 +39,9 @@ func trimPrefixSuffixAll(s string) string {
 	for {
 		if c := s[0:1]; c == " " || c == "\n" {
 			s = strings.TrimPrefix(s, c)
+			if len(s) == 0 {
+				return ""
+			}
 		} else {
 			break
 		}
