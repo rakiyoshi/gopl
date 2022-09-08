@@ -50,5 +50,8 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 }
 
 func main() {
-	title(os.Args[1])
+	err := title(os.Args[1])
+	if err != nil {
+		fmt.Println(err)
+	}
 }
