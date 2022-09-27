@@ -1,0 +1,1 @@
+Both Fahrenheit and Celsius have String() methods.
