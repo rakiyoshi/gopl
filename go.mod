@@ -2,4 +2,4 @@ module gopl
 
 go 1.19
 
-require golang.org/x/net v0.0.0-20220926192436-02166a98028e
+require golang.org/x/net v0.0.0-20220927171203-f486391704dc
