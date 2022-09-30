@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"main/tempconv"
+	"gopl/ch02/tempconv"
 )
 
 func main() {
