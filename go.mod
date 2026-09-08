@@ -1,5 +1,5 @@
 module gopl
 
-go 1.19
+go 1.26.0
 
-require golang.org/x/net v0.5.0
+require golang.org/x/net v0.59.0
